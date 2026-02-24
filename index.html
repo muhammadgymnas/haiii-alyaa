@@ -1,0 +1,1723 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>haloo, alyaa!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --pink-deep: #e8547a;
+        --pink-mid: #f472a0;
+        --pink-light: #ffb3cc;
+        --pink-pale: #ffe4ef;
+        --text-dark: #2d1a25;
+        --text-mid: #6b3a4f;
+        --accent-lilac: #d4a8e4;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: var(--pink-pale);
+      }
+
+      /* INTRO SCREEN */
+      .intro-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: var(--pink-pale);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition:
+          opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+          visibility 0.6s;
+      }
+      .intro-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .intro-text {
+        color: var(--pink-deep);
+        font-weight: 600;
+        font-size: 1.1rem;
+        letter-spacing: 0.1em;
+        animation: pulseIntro 1.5s ease-in-out infinite alternate;
+      }
+      @keyframes pulseIntro {
+        0% {
+          transform: scale(0.95);
+          opacity: 0.6;
+        }
+        100% {
+          transform: scale(1.05);
+          opacity: 1;
+        }
+      }
+
+      /* Pastiin Popmart dan Bubble ada di atas Intro Screen pas awal-awal */
+      .popmart.intro-mode,
+      .bubble.intro-mode {
+        z-index: 10000 !important;
+      }
+
+      .bg-blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(90px);
+        pointer-events: none;
+        z-index: 0;
+        animation: blobFloat 9s ease-in-out infinite;
+      }
+      .bg-blob-1 {
+        width: 520px;
+        height: 520px;
+        background: radial-gradient(circle, #f9a8d450, #fb7bb840);
+        top: -120px;
+        left: -120px;
+      }
+      .bg-blob-2 {
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, #fda4af38, #f472a035);
+        bottom: -100px;
+        right: -100px;
+        animation-delay: -3.5s;
+      }
+      .bg-blob-3 {
+        width: 280px;
+        height: 280px;
+        background: radial-gradient(circle, #d4a8e428, #ffb3cc30);
+        top: 38%;
+        left: 32%;
+        animation-delay: -6s;
+      }
+      @keyframes blobFloat {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        40% {
+          transform: translate(28px, -18px) scale(1.04);
+        }
+        70% {
+          transform: translate(-18px, 26px) scale(0.96);
+        }
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+        opacity: 0.5;
+      }
+
+      /* SLIDES */
+      .slide-container {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+      }
+      .slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 28px;
+        opacity: 0;
+        pointer-events: none;
+        transition:
+          opacity 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+          transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(24px);
+      }
+      .slide.active {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+      .slide.exit {
+        opacity: 0;
+        transform: translateY(-24px);
+        pointer-events: none;
+      }
+      .slide-headline {
+        font-weight: 700;
+        font-size: clamp(1.7rem, 4.5vw, 3.2rem);
+        line-height: 1.25;
+        color: var(--text-dark);
+        text-align: center;
+        max-width: 850px;
+        margin-bottom: 20px;
+      }
+      .slide-sub {
+        font-size: clamp(0.95rem, 2.2vw, 1.12rem);
+        color: var(--text-mid);
+        text-align: center;
+        max-width: 560px;
+        line-height: 1.8;
+        margin-bottom: 32px;
+        font-weight: 400;
+      }
+      .slide-tag {
+        background: #fff;
+        color: var(--pink-deep);
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        padding: 5px 16px;
+        border-radius: 99px;
+        margin-bottom: 22px;
+        border: 1px solid var(--pink-light);
+      }
+
+      /* BUTTONS */
+      .btn-main {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--pink-deep);
+        color: #fff;
+        border: none;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 14px 32px;
+        border-radius: 99px;
+        cursor: pointer;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s,
+          background 0.2s;
+        box-shadow: 0 4px 18px #e8547a35;
+        letter-spacing: 0.01em;
+      }
+      .btn-main:hover {
+        transform: translateY(-2px) scale(1.015);
+        box-shadow: 0 8px 24px #e8547a50;
+      }
+      .btn-main:active {
+        transform: scale(0.97);
+      }
+      .btn-main.ghost {
+        background: transparent;
+        border: 1.5px solid var(--pink-deep);
+        color: var(--pink-deep);
+        box-shadow: none;
+      }
+      .btn-main.ghost:hover {
+        background: #fff0f5;
+      }
+      .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+      }
+
+      /* PROGRESS */
+      .progress {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 100;
+      }
+      .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 99px;
+        background: var(--pink-light);
+        transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .dot.active {
+        width: 26px;
+        background: var(--pink-deep);
+      }
+
+      /* DISCLAIMER */
+      .disclaimer {
+        position: fixed;
+        bottom: 11px;
+        right: 14px;
+        z-index: 200;
+        font-size: 8.5px;
+        color: #b07088;
+        opacity: 0.55;
+        max-width: 215px;
+        text-align: right;
+        line-height: 1.5;
+        pointer-events: none;
+      }
+
+      /* NOW PLAYING WIDGET */
+      .now-playing {
+        position: fixed;
+        top: 18px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 200;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+        border: 1px solid var(--pink-light);
+        border-radius: 99px;
+        padding: 8px 18px 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 4px 20px #e8547a18;
+        transition:
+          opacity 0.4s,
+          transform 0.4s;
+        white-space: nowrap;
+      }
+      .now-playing.hidden {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-8px);
+        pointer-events: none;
+      }
+      .np-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 14px;
+      }
+      .np-bar {
+        width: 3px;
+        background: var(--pink-deep);
+        border-radius: 2px;
+        animation: barPulse 0.8s ease-in-out infinite;
+      }
+      .np-bar:nth-child(1) {
+        height: 8px;
+        animation-delay: 0s;
+      }
+      .np-bar:nth-child(2) {
+        height: 14px;
+        animation-delay: 0.15s;
+      }
+      .np-bar:nth-child(3) {
+        height: 6px;
+        animation-delay: 0.3s;
+      }
+      .np-bar:nth-child(4) {
+        height: 12px;
+        animation-delay: 0.1s;
+      }
+      @keyframes barPulse {
+        0%,
+        100% {
+          transform: scaleY(0.4);
+        }
+        50% {
+          transform: scaleY(1);
+        }
+      }
+      .np-text {
+        font-size: 0.75rem;
+        color: var(--text-dark);
+      }
+      .np-title {
+        font-weight: 700;
+      }
+      .np-artist {
+        color: var(--text-mid);
+        font-weight: 400;
+      }
+      .np-link {
+        font-size: 0.68rem;
+        color: var(--pink-deep);
+        text-decoration: none;
+        font-weight: 600;
+        opacity: 0.8;
+      }
+      .np-link:hover {
+        opacity: 1;
+      }
+
+      /* POPMART DOLL */
+      .popmart {
+        position: fixed;
+        z-index: 150;
+        cursor: pointer;
+        user-select: none;
+        width: 82px;
+        filter: drop-shadow(0 8px 18px #e8547a28);
+        transition:
+          left 1.4s ease-in-out,
+          bottom 1.4s ease-in-out,
+          filter 0.2s;
+      }
+      .popmart:hover {
+        filter: drop-shadow(0 10px 24px #e8547a55);
+      }
+      .popmart.mood-happy {
+        animation: dollFloat 4s ease-in-out infinite;
+      }
+      .popmart.mood-sad {
+        animation: dollSad 0.45s ease-in-out infinite alternate;
+      }
+      .popmart.mood-shock {
+        animation: dollShock 0.18s ease-in-out 8 forwards;
+      }
+      .popmart.mood-excited {
+        animation: dollExcited 0.35s ease-in-out infinite alternate;
+      }
+      @keyframes dollFloat {
+        0%,
+        100% {
+          transform: translateY(0) rotate(-2deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate(2deg);
+        }
+      }
+      @keyframes dollSad {
+        from {
+          transform: rotate(-9deg) translateY(2px);
+        }
+        to {
+          transform: rotate(9deg) translateY(-4px);
+        }
+      }
+      @keyframes dollShock {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.12) rotate(-4deg);
+        }
+      }
+      @keyframes dollExcited {
+        from {
+          transform: translateY(0) rotate(-5deg) scale(1);
+        }
+        to {
+          transform: translateY(-12px) rotate(5deg) scale(1.1);
+        }
+      }
+
+      /* BUBBLE */
+      .bubble {
+        position: fixed;
+        z-index: 160;
+        pointer-events: none;
+        background: #fff;
+        border-radius: 14px;
+        padding: 10px 15px;
+        box-shadow: 0 4px 18px #e8547a18;
+        font-size: 0.76rem;
+        color: var(--text-dark);
+        line-height: 1.55;
+        max-width: 185px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .bubble.show {
+        opacity: 1;
+      }
+      .bubble::after {
+        content: "";
+        position: absolute;
+        bottom: -9px;
+        left: 18px;
+        border: 5px solid transparent;
+        border-top-color: #fff;
+      }
+      .bubble.flip::after {
+        left: auto;
+        right: 18px;
+      }
+
+      /* GRADIENT TEXT */
+      .gradient-text {
+        background: linear-gradient(
+          135deg,
+          var(--pink-deep) 0%,
+          var(--accent-lilac) 55%,
+          var(--pink-mid) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        background-size: 200%;
+        animation: gradShift 3.5s ease infinite;
+      }
+      @keyframes gradShift {
+        0%,
+        100% {
+          background-position: 0%;
+        }
+        50% {
+          background-position: 100%;
+        }
+      }
+
+      /* SPOTIFY */
+      .spotify-card {
+        background: #111;
+        border-radius: 18px;
+        padding: 22px;
+        max-width: 450px;
+        width: 100%;
+        box-shadow: 0 20px 50px #00000030;
+        margin-bottom: 18px;
+        position: relative;
+        overflow: hidden;
+      }
+      .spotify-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, #1db95410, transparent);
+        pointer-events: none;
+      }
+      .spotify-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+      .spotify-cover {
+        width: 64px;
+        height: 64px;
+        border-radius: 9px;
+        flex-shrink: 0;
+        background: linear-gradient(
+          135deg,
+          var(--pink-deep),
+          var(--accent-lilac)
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7rem;
+        box-shadow: 0 4px 14px #e8547a55;
+        color: #fff;
+      }
+      .spotify-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Biar gambarnya proporsional dan nggak gepeng */
+      }
+      .spotify-info {
+        flex: 1;
+      }
+      .spotify-playlist-name {
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-bottom: 3px;
+      }
+      .spotify-playlist-sub {
+        color: #999;
+        font-size: 0.76rem;
+      }
+      .spotify-tracks {
+        list-style: none;
+      }
+      .spotify-track {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 7px;
+        border-radius: 7px;
+        border-bottom: 1px solid #ffffff0d;
+        cursor: pointer;
+        transition: background 0.18s;
+      }
+      .spotify-track:last-child {
+        border-bottom: none;
+      }
+      .spotify-track:hover {
+        background: #ffffff0d;
+      }
+      .track-num {
+        color: #777;
+        font-size: 0.8rem;
+        width: 18px;
+        text-align: center;
+      }
+      .track-play {
+        color: #1db954;
+        font-size: 0.9rem;
+        display: none;
+      }
+      .spotify-track:hover .track-num {
+        display: none;
+      }
+      .spotify-track:hover .track-play {
+        display: block;
+      }
+      .track-info {
+        flex: 1;
+      }
+      .track-name {
+        color: #fff;
+        font-size: 0.86rem;
+        font-weight: 500;
+      }
+      .track-artist {
+        color: #999;
+        font-size: 0.74rem;
+        margin-top: 2px;
+      }
+      .track-dur {
+        color: #777;
+        font-size: 0.76rem;
+      }
+      .spotify-footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 12px;
+      }
+      .spotify-save-btn {
+        background: #1db954;
+        color: #000;
+        font-weight: 700;
+        font-size: 0.8rem;
+        border: none;
+        padding: 9px 20px;
+        border-radius: 99px;
+        cursor: pointer;
+        transition:
+          transform 0.18s,
+          background 0.18s;
+        font-family: "Montserrat", sans-serif;
+      }
+      .spotify-save-btn:hover {
+        background: #1ed760;
+        transform: scale(1.03);
+      }
+      .spotify-link {
+        color: #666;
+        font-size: 0.72rem;
+        text-decoration: none;
+      }
+      .spotify-link:hover {
+        color: #fff;
+      }
+
+      /* COFFEE */
+      .coffee-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        max-width: 440px;
+        width: 100%;
+        margin-bottom: 22px;
+      }
+      .coffee-card {
+        border-radius: 16px;
+        overflow: hidden;
+        cursor: pointer;
+        position: relative;
+        border: 2.5px solid transparent;
+        transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+        aspect-ratio: 1/1;
+        box-shadow: 0 3px 14px #e8547a14;
+      }
+      .coffee-card:hover {
+        transform: scale(1.04);
+        border-color: var(--pink-mid);
+        box-shadow: 0 6px 22px #e8547a28;
+      }
+      .coffee-card.selected {
+        border-color: var(--pink-deep);
+        transform: scale(1.04);
+        box-shadow: 0 8px 24px #e8547a38;
+      }
+      .coffee-bg {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .coffee-icon-big {
+        font-size: 2.8rem;
+        position: relative;
+        z-index: 1;
+      }
+      .coffee-name-label {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, #2d1a25cc);
+        padding: 8px 10px;
+        color: #fff;
+        font-weight: 700;
+        font-size: 0.75rem;
+        line-height: 1.3;
+        text-align: center;
+      }
+      .coffee-check {
+        position: absolute;
+        top: 9px;
+        right: 9px;
+        background: var(--pink-deep);
+        color: #fff;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.72rem;
+        opacity: 0;
+        transform: scale(0);
+        transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .coffee-card.selected .coffee-check {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      /* SLIDE 6 layout */
+      #slide6btns {
+        flex-wrap: nowrap;
+        width: max-content;
+      }
+      #slide6 .slide-inner {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        padding: 70px 32px 60px;
+        max-height: 100vh;
+        overflow: visible;
+      }
+      #slide6-doll-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      #slide6-doll-inner {
+        width: 130px;
+        transform: translateX(-180px);
+      }
+      #slide6-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        max-width: 650px;
+      }
+      #slide6-content .slide-tag {
+        align-self: flex-start;
+      }
+      #slide6-content .slide-headline {
+        text-align: left;
+      }
+      #slide6-content .slide-sub {
+        text-align: left;
+      }
+      #slide6btns {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        width: 100%;
+      }
+
+      /* NO BUTTON */
+      #btn-no {
+        background: #bba0aa;
+        box-shadow: none;
+        font-size: 0.88rem;
+      }
+      #btn-no:hover {
+        background: #a08898;
+      }
+      #btn-no.crying {
+        animation: btnCry 0.28s ease-in-out infinite;
+        background: var(--pink-deep);
+      }
+      @keyframes btnCry {
+        0%,
+        100% {
+          transform: rotate(-3deg) scale(0.96);
+        }
+        50% {
+          transform: rotate(3deg) scale(1.04);
+        }
+      }
+      #no-attempts-msg {
+        margin-top: 14px;
+        font-size: 0.8rem;
+        color: var(--pink-deep);
+        opacity: 0;
+        transition: opacity 0.4s;
+        max-width: 360px;
+        line-height: 1.6;
+      }
+
+      /* HEARTS & CONFETTI */
+      .heart-burst {
+        position: fixed;
+        pointer-events: none;
+        z-index: 999;
+        animation: heartFly 1.4s forwards;
+      }
+      @keyframes heartFly {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--tx), var(--ty)) scale(0.2);
+        }
+      }
+      .confetti-piece {
+        position: fixed;
+        pointer-events: none;
+        z-index: 999;
+        width: 9px;
+        height: 9px;
+        border-radius: 2px;
+        animation: confettiFall 2.2s forwards;
+      }
+      @keyframes confettiFall {
+        0% {
+          opacity: 1;
+          transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+          opacity: 0;
+          transform: translate(var(--cx), var(--cy)) rotate(600deg);
+        }
+      }
+
+      /* YES OVERLAY */
+      .yes-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        background: linear-gradient(135deg, #ffe4ef, #ffd6e8);
+        padding: 40px;
+      }
+      .yes-overlay.show {
+        display: flex;
+        animation: fadeInScale 0.5s ease;
+      }
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.93);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .yes-headline {
+        font-weight: 700;
+        font-size: clamp(2rem, 5.5vw, 3.8rem);
+        color: var(--text-dark);
+        text-align: center;
+        margin-bottom: 14px;
+        margin-top: 20px;
+      }
+      .yes-sub {
+        font-size: 1.02rem;
+        color: var(--text-mid);
+        text-align: center;
+        max-width: 460px;
+        line-height: 1.8;
+      }
+
+      .slide-inner {
+        max-height: 90vh;
+        overflow-y: auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px 0;
+        scrollbar-width: none;
+      }
+      .slide-inner::-webkit-scrollbar {
+        display: none;
+      }
+
+      @media (max-width: 640px) {
+        #slide6 .slide-inner {
+          flex-direction: column;
+          gap: 20px;
+          padding: 50px 20px 60px;
+        }
+        #slide6-content {
+          align-items: center;
+        }
+        #slide6-content .slide-tag,
+        #slide6-content .slide-headline,
+        #slide6-content .slide-sub {
+          text-align: center;
+          align-self: center;
+        }
+        #slide6-doll-inner {
+          width: 100px;
+        }
+        .slide-headline {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="intro-screen" class="intro-screen">
+      <div class="intro-text">
+        <span>( tap anywhere to open )</span>
+      </div>
+    </div>
+
+    <div class="bg-blob bg-blob-1"></div>
+    <div class="bg-blob bg-blob-2"></div>
+    <div class="bg-blob bg-blob-3"></div>
+
+    <div class="now-playing hidden" id="nowPlaying">
+      <div class="np-bars">
+        <div class="np-bar"></div>
+        <div class="np-bar"></div>
+        <div class="np-bar"></div>
+        <div class="np-bar"></div>
+      </div>
+      <div class="np-text">
+        <span class="np-title" id="npTitle"></span>
+        <span class="np-artist" id="npArtist"></span>
+      </div>
+      <a class="np-link" id="npLink" href="#" target="_blank">open ↗</a>
+    </div>
+
+    <div
+      class="popmart mood-happy"
+      id="popmart"
+      style="left: 28px; bottom: 70px"
+    >
+      <svg
+        viewBox="0 0 70 92"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style="width: 100%; height: auto"
+      >
+        <ellipse cx="27" cy="88" rx="7" ry="4.5" fill="#fbcfe8" />
+        <ellipse cx="43" cy="88" rx="7" ry="4.5" fill="#fbcfe8" />
+        <ellipse cx="35" cy="73" rx="19" ry="17" fill="#f9a8d4" />
+        <rect x="16" y="50" width="38" height="28" rx="11" fill="#fbcfe8" />
+        <ellipse
+          cx="11"
+          cy="61"
+          rx="5"
+          ry="9.5"
+          fill="#fbcfe8"
+          transform="rotate(18,11,61)"
+        />
+        <ellipse
+          cx="59"
+          cy="61"
+          rx="5"
+          ry="9.5"
+          fill="#fbcfe8"
+          transform="rotate(-18,59,61)"
+        />
+        <ellipse cx="13" cy="35" rx="4.5" ry="5.5" fill="#ffe8f0" />
+        <ellipse cx="57" cy="35" rx="4.5" ry="5.5" fill="#ffe8f0" />
+        <ellipse cx="35" cy="35" rx="22" ry="23" fill="#ffe8f0" />
+        <ellipse
+          cx="22"
+          cy="42"
+          rx="5.5"
+          ry="3.5"
+          fill="#f472a0"
+          opacity="0.32"
+        />
+        <ellipse
+          cx="48"
+          cy="42"
+          rx="5.5"
+          ry="3.5"
+          fill="#f472a0"
+          opacity="0.32"
+        />
+        <ellipse id="eye-l" cx="27" cy="34" rx="3.8" ry="4.8" fill="#2d1a25" />
+        <ellipse id="eye-r" cx="43" cy="34" rx="3.8" ry="4.8" fill="#2d1a25" />
+        <circle cx="28.6" cy="32.2" r="1.4" fill="white" />
+        <circle cx="44.6" cy="32.2" r="1.4" fill="white" />
+        <path
+          id="mouth-smile"
+          d="M28 45 Q35 51.5 42 45"
+          stroke="#e8547a"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          fill="none"
+        />
+        <path
+          id="mouth-sad"
+          d="M28 51 Q35 45 42 51"
+          stroke="#e8547a"
+          stroke-width="2.2"
+          stroke-linecap="round"
+          fill="none"
+          style="display: none"
+        />
+        <ellipse
+          id="mouth-open"
+          cx="35"
+          cy="47"
+          rx="4.5"
+          ry="4"
+          fill="#f9a8d4"
+          stroke="#e8547a"
+          stroke-width="1.5"
+          style="display: none"
+        />
+        <ellipse
+          cx="24"
+          cy="13"
+          rx="9.5"
+          ry="6.5"
+          fill="#f472a0"
+          transform="rotate(-28,24,13)"
+        />
+        <ellipse
+          cx="46"
+          cy="13"
+          rx="9.5"
+          ry="6.5"
+          fill="#f472a0"
+          transform="rotate(28,46,13)"
+        />
+        <circle cx="35" cy="13" r="4.5" fill="#e8547a" />
+      </svg>
+    </div>
+
+    <div class="bubble" id="dollBubble"></div>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="disclaimer">
+      (Disclaimer: website ini warnanya pink bukan karena aku suka pink tapi
+      nyesuain sama vibe kamu aja)
+    </div>
+
+    <div class="slide-container">
+      <div class="slide active" id="slide1">
+        <div class="slide-inner">
+          <div class="slide-tag">01</div>
+          <h1 class="slide-headline" style="text-wrap: balance">
+            magang udah beres nihh. akhirnya bebas dari pantauan humas yang
+            jutek gabales chat
+            <span style="white-space: nowrap">itu. 😊🙏🏼</span>
+          </h1>
+          <button class="btn-main" onclick="goToSlide(2)">Lanjut</button>
+        </div>
+      </div>
+
+      <div class="slide" id="slide2">
+        <div class="slide-inner">
+          <div class="slide-tag">02</div>
+          <h1 class="slide-headline">
+            sebelum kita sibuk masing-masing,<br />ada satu fakta yang mau aku
+            akuin.
+          </h1>
+          <p class="slide-sub" style="font-size: 1.2rem; font-weight: 600">
+            <span class="gradient-text"
+              >lu spread a really good vibes and charming smiles around you!
+              ✨</span
+            >
+          </p>
+          <button class="btn-main" onclick="goToSlide(3)">okeh, terus?</button>
+        </div>
+      </div>
+
+      <div class="slide" id="slide3">
+        <div class="slide-inner">
+          <div class="slide-tag">03</div>
+          <h1
+            class="slide-headline"
+            style="
+              font-size: clamp(1.15rem, 2.8vw, 1.9rem);
+              margin-bottom: 14px;
+            "
+          >
+            you giving me stevie wonder "isn't she lovely" vibes lol.<br />
+            hope this made your day and once againn thankyouu yaa for everything
+            you gave the world!
+          </h1>
+          <div class="spotify-card">
+            <div class="spotify-header">
+              <div class="spotify-cover">
+                <img src="./images/ALYAAA.png" alt="Cover Alya's Playlist" />
+              </div>
+              <div class="spotify-info">
+                <div class="spotify-playlist-name">Alya's</div>
+                <div class="spotify-playlist-sub">
+                  curated for you · 24 songs · 1 hr 26 min
+                </div>
+              </div>
+            </div>
+            <ul class="spotify-tracks">
+              <li class="spotify-track" onclick="playTrack(this)">
+                <span class="track-num">1</span
+                ><span class="track-play">▶</span>
+                <div class="track-info">
+                  <div class="track-name">Isn't She Lovely</div>
+                  <div class="track-artist">Stevie Wonder</div>
+                </div>
+                <span class="track-dur">3:19</span>
+              </li>
+              <li class="spotify-track" onclick="playTrack(this)">
+                <span class="track-num">2</span
+                ><span class="track-play">▶</span>
+                <div class="track-info">
+                  <div class="track-name">Potion</div>
+                  <div class="track-artist">Djo</div>
+                </div>
+                <span class="track-dur">2:48</span>
+              </li>
+              <li class="spotify-track" onclick="playTrack(this)">
+                <span class="track-num">3</span
+                ><span class="track-play">▶</span>
+                <div class="track-info">
+                  <div class="track-name">
+                    Till There Was You - Remastered 2009
+                  </div>
+                  <div class="track-artist">The Beatles</div>
+                </div>
+                <span class="track-dur">2:16</span>
+              </li>
+            </ul>
+            <div class="spotify-footer">
+              <button class="spotify-save-btn" onclick="savePlaylist(event)">
+                Save Playlist
+              </button>
+            </div>
+          </div>
+          <p class="slide-sub" style="font-size: 0.86rem; margin-bottom: 20px">
+            aku bikinin playlist ini buat kamu. (jangan kegeeran dulu, ini
+            sebagian besar karena lu giving this whole vibes ajaa, WKWKWK).
+          </p>
+          <button class="btn-main" onclick="goToSlide(4)">
+            wait... ada apa lagi?
+          </button>
+        </div>
+      </div>
+
+      <div class="slide" id="slide4">
+        <div class="slide-inner">
+          <div class="slide-tag">04</div>
+          <h1 class="slide-headline">jadi gini intinya.</h1>
+          <p class="slide-sub">
+            walaupun sekarang urusan profesional udah selesai, aku punya
+            <strong style="color: var(--pink-deep)"
+              >interest buat kenal kamu lebih jauh.</strong
+            ><br /><br />
+            dan please jangan anggep aku orang yang serius banget, I'm more
+            serious for being as random as I can HAHAHA
+          </p>
+          <button class="btn-main" onclick="goToSlide(5)">
+            okay... tell me more?
+          </button>
+        </div>
+      </div>
+
+      <div class="slide" id="slide5">
+        <div class="slide-inner">
+          <div class="slide-tag">05</div>
+          <h1
+            class="slide-headline"
+            style="font-size: clamp(1.35rem, 3.2vw, 2.3rem)"
+          >
+            tapii sebelum itu, aku mau tau nih.
+          </h1>
+          <p class="slide-sub">
+            kalo ngopi, ambience kayak apa yang
+            <strong style="color: var(--pink-deep)">"Alya banget"?</strong>
+            hweheh
+          </p>
+          <div class="coffee-grid">
+            <div
+              class="coffee-card"
+              onclick="selectCoffee(this, 'Kanoko Cempaka')"
+            >
+              <div
+                class="coffee-bg"
+                style="background: linear-gradient(145deg, #ffd6e7, #ffb3cc)"
+              >
+                <div class="coffee-icon-big">🌸</div>
+                <div class="coffee-name-label">Kanoko Cempaka</div>
+              </div>
+              <div class="coffee-check">✓</div>
+            </div>
+            <div
+              class="coffee-card"
+              onclick="selectCoffee(this, 'De.u Coffee Dago')"
+            >
+              <div
+                class="coffee-bg"
+                style="background: linear-gradient(145deg, #d4a8e4, #c4a0d8)"
+              >
+                <div class="coffee-icon-big">🌿</div>
+                <div class="coffee-name-label">De.u Coffee Dago</div>
+              </div>
+              <div class="coffee-check">✓</div>
+            </div>
+            <div
+              class="coffee-card"
+              onclick="selectCoffee(this, 'The House Plants')"
+            >
+              <div
+                class="coffee-bg"
+                style="background: linear-gradient(145deg, #a8e4c8, #7ed4a8)"
+              >
+                <div class="coffee-icon-big">🪴</div>
+                <div class="coffee-name-label">The House Plants</div>
+              </div>
+              <div class="coffee-check">✓</div>
+            </div>
+            <div
+              class="coffee-card"
+              onclick="selectCoffee(this, 'Makmur Jaya Roasters Soka')"
+            >
+              <div
+                class="coffee-bg"
+                style="background: linear-gradient(145deg, #ffd166, #f0b840)"
+              >
+                <div class="coffee-icon-big">☕</div>
+                <div class="coffee-name-label">Makmur Jaya Roasters Soka</div>
+              </div>
+              <div class="coffee-check">✓</div>
+            </div>
+          </div>
+          <button
+            class="btn-main"
+            id="btnCoffeeNext"
+            style="opacity: 0.4; pointer-events: none"
+            onclick="goToSlide(6)"
+          >
+            oke, aku pilih ini!
+          </button>
+        </div>
+      </div>
+
+      <div class="slide" id="slide6">
+        <div class="slide-inner">
+          <div id="slide6-doll-wrap"><div id="slide6-doll-inner"></div></div>
+          <div id="slide6-content">
+            <div class="slide-tag">06</div>
+            <h1 class="slide-headline" id="slide6headline">
+              Great choice! HAHAHA.
+            </h1>
+            <p class="slide-sub" style="margin-bottom: 24px">
+              So,... <strong>Let's grab a coffee.</strong><br />
+              looking forward to ngobrol banyak sama lu!
+            </p>
+            <div class="btn-group" id="slide6btns">
+              <button class="btn-main" onclick="handleYes('boleh')">
+                bolehh, ayo ngopi!
+              </button>
+              <button class="btn-main ghost" onclick="handleYes('sibuk')">
+                aku sibuk, tapi ayo deh!
+              </button>
+              <button class="btn-main" id="btn-no" onclick="handleNo(event)">
+                ngga deh, ga tertarik
+              </button>
+            </div>
+            <div id="no-attempts-msg"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="yes-overlay" id="yesOverlay">
+      <div id="yes-doll-slot"></div>
+      <h1 class="yes-headline" id="yesHeadline">yesss!! aku tunggu yaa</h1>
+      <p class="yes-sub" id="yesSub">
+        can't wait. see you soon, and looking forward to knowing you better.
+      </p>
+
+      <button
+        id="btnWA"
+        class="btn-main"
+        style="margin-top: 24px; z-index: 501"
+      >
+        chat aku sekarang gas ngweng! 🚀
+      </button>
+    </div>
+
+    <script>
+      let currentSlide = 1;
+      const totalSlides = 6;
+      let selectedCoffee = "";
+      let noAttempts = 0;
+      let dollMode = "fixed";
+
+      // ── DATA TRACKS ──
+      const tracks = {
+        1: {
+          title: "Best Day Ever",
+          artist: "· SpongeBob SquarePants",
+          search:
+            "https://open.spotify.com/search/Best%20Day%20Ever%20SpongeBob",
+          src: "./audio/lagu1.mp3",
+        },
+        2: {
+          title: "Sunday Morning",
+          artist: "· Maroon 5",
+          search:
+            "https://open.spotify.com/search/Sunday%20Morning%20Maroon%205",
+          src: "./audio/lagu2.mp3",
+        },
+        3: {
+          title: "Isn't She Lovely",
+          artist: "· Stevie Wonder",
+          search:
+            "https://open.spotify.com/search/Isn%27t%20She%20Lovely%20Stevie%20Wonder",
+          src: "./audio/lagu3.mp3",
+        },
+        4: {
+          title: "Are You Bored Yet?",
+          artist: "· Wallows",
+          search:
+            "https://open.spotify.com/search/Are%20You%20Bored%20Yet%20Wallows",
+          src: "./audio/lagu4.mp3",
+        },
+        5: {
+          title: "Coffee",
+          artist: "· beabadoobee",
+          search: "https://open.spotify.com/search/Coffee%20beabadoobee",
+          src: "./audio/lagu5.mp3",
+        },
+        6: {
+          title: "Bloom",
+          artist: "The Paper Kites",
+          search:
+            "https://open.spotify.com/track/1HMQmOWrkieKYWlFsjUP3D?si=7145aa8f75ee4a49",
+          src: "./audio/lagu6.mp3",
+        },
+      };
+
+      const bubbleTexts = {
+        1: "haiii alyaaa, heheheh",
+        2: "tbh, ini serius!",
+        3: "dengerin playlistnya ya!",
+        4: "intinyaaaa....",
+        5: "pilih yang paling ngerasa 'kamu banget'.",
+        6: "my last invitation!",
+      };
+
+      const dollPositions = {
+        1: { side: "left", x: 28, y: 70 },
+        2: { side: "right", x: 28, y: 70 },
+        3: { side: "left", x: 28, y: 90 },
+        4: { side: "right", x: 28, y: 90 },
+        5: { side: "left", x: 28, y: 80 },
+      };
+
+      // ── UI ELEMENTS ──
+      const doll = document.getElementById("popmart");
+      const bubbleEl = document.getElementById("dollBubble");
+      const progressEl = document.getElementById("progress");
+      let bubbleTimer;
+
+      for (let i = 1; i <= totalSlides; i++) {
+        const d = document.createElement("div");
+        d.className = "dot" + (i === 1 ? " active" : "");
+        d.id = "dot" + i;
+        progressEl.appendChild(d);
+      }
+
+      function updateProgress(n) {
+        for (let i = 1; i <= totalSlides; i++) {
+          document.getElementById("dot" + i).className =
+            "dot" + (i === n ? " active" : "");
+        }
+      }
+
+      function updateNowPlaying(slide) {
+        const t = tracks[slide];
+        const widget = document.getElementById("nowPlaying");
+        document.getElementById("npTitle").textContent = t.title + " ";
+        document.getElementById("npArtist").textContent = t.artist;
+        document.getElementById("npLink").href = t.search;
+        widget.classList.remove("hidden");
+      }
+
+      function showBubble(text) {
+        clearTimeout(bubbleTimer);
+        bubbleEl.textContent = text;
+        const r = doll.getBoundingClientRect();
+        if (dollMode === "hero" || dollMode === "overlay") {
+          bubbleEl.className = "bubble show";
+          bubbleEl.style.left = r.right + 12 + "px";
+          bubbleEl.style.top = r.top + 10 + "px";
+          bubbleEl.style.bottom = "auto";
+          bubbleEl.style.right = "auto";
+        } else {
+          const onRight = r.left > window.innerWidth / 2;
+          bubbleEl.className = "bubble show" + (onRight ? " flip" : "");
+          bubbleEl.style.top = "auto";
+          bubbleEl.style.bottom = window.innerHeight - r.top + 8 + "px";
+          if (onRight) {
+            bubbleEl.style.right = "100px";
+            bubbleEl.style.left = "auto";
+          } else {
+            bubbleEl.style.left = r.right + 8 + "px";
+            bubbleEl.style.right = "auto";
+          }
+        }
+        bubbleTimer = setTimeout(() => bubbleEl.classList.remove("show"), 3400);
+      }
+
+      function setDollMood(mood) {
+        document.getElementById("mouth-smile").style.display = "none";
+        document.getElementById("mouth-sad").style.display = "none";
+        document.getElementById("mouth-open").style.display = "none";
+        if (dollMode === "fixed" || dollMode === "hero") {
+          doll.className = "popmart mood-" + mood;
+          if (dollMode === "hero")
+            doll.style.animation =
+              mood === "happy" ? "dollFloat 4s ease-in-out infinite" : "";
+        }
+        if (mood === "sad")
+          document.getElementById("mouth-sad").style.display = "block";
+        else if (mood === "shock" || mood === "excited")
+          document.getElementById("mouth-open").style.display = "block";
+        else document.getElementById("mouth-smile").style.display = "block";
+      }
+
+      function moveDollToSlide(slide) {
+        if (slide === 6) {
+          dollMode = "hero";
+          const inner = document.getElementById("slide6-doll-inner");
+          doll.style.cssText =
+            "width:130px;height:auto;position:relative;cursor:pointer;filter:drop-shadow(0 10px 24px #e8547a38);display:block;animation:none;";
+          doll.className = "popmart mood-happy";
+          doll.style.animation = "dollFloat 4s ease-in-out infinite";
+          inner.appendChild(doll);
+          setDollMood("happy");
+        } else {
+          if (dollMode !== "fixed") {
+            document.body.appendChild(doll);
+            doll.style.cssText = "";
+            doll.className = "popmart mood-happy";
+            doll.style.width = "82px";
+            doll.style.position = "fixed";
+          }
+          dollMode = "fixed";
+          const pos = dollPositions[slide];
+          doll.style.bottom = pos.y + "px";
+          doll.style.top = "auto";
+          if (pos.side === "right") {
+            doll.style.left = `calc(100vw - 82px - ${pos.x}px)`;
+            doll.style.right = "auto";
+          } else {
+            doll.style.left = pos.x + "px";
+            doll.style.right = "auto";
+          }
+          setDollMood("happy");
+        }
+      }
+
+      function goToSlide(n) {
+        clearTimeout(bubbleTimer);
+        bubbleEl.classList.remove("show");
+
+        const curr = document.getElementById("slide" + currentSlide);
+        curr.classList.remove("active");
+        curr.classList.add("exit");
+        setTimeout(() => curr.classList.remove("exit"), 650);
+
+        currentSlide = n;
+        document.getElementById("slide" + n).classList.add("active");
+
+        updateProgress(n);
+        moveDollToSlide(n);
+        setTimeout(() => showBubble(bubbleTexts[n]), 1500);
+        updateNowPlaying(n);
+        playAudioForSlide(n);
+      }
+
+      doll.addEventListener("click", () => {
+        const msgs = [
+          "hi!",
+          "we're good.",
+          "jangan lupa scroll.",
+          "ok ok.",
+          "hey~",
+          "heheheh",
+        ];
+        showBubble(msgs[Math.floor(Math.random() * msgs.length)]);
+        spawnHearts(doll);
+      });
+
+      function playTrack(el) {
+        document
+          .querySelectorAll(".spotify-track")
+          .forEach((t) => (t.style.background = ""));
+        el.style.background = "#ffffff0d";
+      }
+
+      function savePlaylist(e) {
+        const b = e.target;
+
+        // Cegah spam klik (kalo udah diklik, ga bisa diklik lagi)
+        if (b.textContent === "Saved! Redirecting...") return;
+
+        // 1. Ganti tulisan dan warna tombol
+        b.textContent = "Saved! Redirecting...";
+        b.style.background = "#fff";
+        b.style.color = "#1db954";
+
+        // 2. Munculin efek hati
+        spawnHearts(b);
+
+        // 3. Bikin boneka Popmart komentar
+        showBubble("awas aja kalo ga di-love beneran di Spotify-nya! 🎧✨");
+        setDollMood("excited");
+
+        // 4. Arahin ke link Spotify asli setelah nunggu 1.8 detik (biar dia sempet baca bubble-nya)
+        setTimeout(() => {
+          // GANTI LINK DI BAWAH SAMA LINK PLAYLIST ASLI KAMU
+          window.open(
+            "https://open.spotify.com/playlist/1c6iCf76bNla78gJ2JCGIk?si=de6b27d5650848d0",
+            "_blank",
+          );
+        }, 2800);
+      }
+
+      function selectCoffee(el, name) {
+        document
+          .querySelectorAll(".coffee-card")
+          .forEach((c) => c.classList.remove("selected"));
+        el.classList.add("selected");
+        selectedCoffee = name;
+        const nb = document.getElementById("btnCoffeeNext");
+        nb.style.opacity = "1";
+        nb.style.pointerEvents = "all";
+        showBubble('"' + name + '" — nice pick.');
+      }
+
+      function handleYes(type) {
+        const overlay = document.getElementById("yesOverlay");
+        const btnWA = document.getElementById("btnWA");
+
+        // GANTI DENGAN NOMOR WA KAMU (pakai 62)
+        const myWhatsApp = "6285807130004";
+
+        let pesanWA = "";
+
+        if (type === "sibuk") {
+          document.getElementById("yesHeadline").textContent =
+            "HAHAHA okay fair enough!!";
+          document.getElementById("yesSub").innerHTML =
+            "RESPECT, si sibuk, see you soon! looking forward to it.";
+
+          pesanWA =
+            "aku sibuk sih sebenernya, tapi bolehh deh disempetin buat ngopi hahaha🙏🏼";
+        } else {
+          pesanWA = "ayo ngopi! aku udah liat webnya hahaha😊";
+        }
+
+        // Pakai api.whatsapp.com + encodeURIComponent biar emojinya super aman
+        const linkWhatsAppAsli = `https://api.whatsapp.com/send?phone=${myWhatsApp}&text=${encodeURIComponent(pesanWA)}`;
+
+        // Pasang linknya ke event klik tombol
+        btnWA.onclick = function () {
+          window.open(linkWhatsAppAsli, "_blank");
+        };
+
+        dollMode = "overlay";
+        const slot = document.getElementById("yes-doll-slot");
+        doll.style.cssText =
+          "width:120px;position:relative;cursor:pointer;filter:drop-shadow(0 12px 28px #e8547a44);animation:dollExcited 0.35s ease-in-out infinite alternate;";
+        setDollMood("excited");
+        slot.appendChild(doll);
+        overlay.classList.add("show");
+        spawnConfetti();
+      }
+
+      let btnFixed = false,
+        btnX = 0,
+        btnY = 0;
+      const noMsgs = [
+        "lah ko gabisa dipencet?",
+        "cobain tombol lain ga si?",
+        "HAHAHA, sumpah ko kabur-kabur mulu",
+        "dia kabur sendiri, aslii wkwk.",
+        "ok fine. aku nyerah, dia yang bandel.",
+      ];
+
+      function handleNo(e) {
+        e.preventDefault();
+        noAttempts++;
+        const btn = document.getElementById("btn-no");
+        const msg = document.getElementById("no-attempts-msg");
+        setDollMood("sad");
+        showBubble(noMsgs[Math.min(noAttempts - 1, noMsgs.length - 1)]);
+        moveButtonAway(btn);
+        msg.style.opacity = "1";
+        msg.textContent = noMsgs[Math.min(noAttempts - 1, noMsgs.length - 1)];
+        setTimeout(() => (msg.style.opacity = "0"), 2800);
+        btn.classList.add("crying");
+        setTimeout(() => btn.classList.remove("crying"), 900);
+      }
+
+      function moveButtonAway(btn) {
+        if (!btnFixed) {
+          const r = btn.getBoundingClientRect();
+          btnX = r.left;
+          btnY = r.top;
+          btn.style.position = "fixed";
+          btn.style.left = btnX + "px";
+          btn.style.top = btnY + "px";
+          btn.style.zIndex = "300";
+          btn.style.margin = "0";
+          btnFixed = true;
+        }
+        const vw = window.innerWidth,
+          vh = window.innerHeight;
+        const range = 110 + noAttempts * 25;
+        let nx = btnX + (Math.random() - 0.5) * range * 2;
+        let ny = btnY + (Math.random() - 0.5) * range * 2;
+        nx = Math.max(10, Math.min(vw - 165, nx));
+        ny = Math.max(10, Math.min(vh - 55, ny));
+        btn.style.transition =
+          "left 0.35s cubic-bezier(0.34,1.56,0.64,1),top 0.35s cubic-bezier(0.34,1.56,0.64,1)";
+        btn.style.left = nx + "px";
+        btn.style.top = ny + "px";
+        btnX = nx;
+        btnY = ny;
+      }
+
+      document
+        .getElementById("btn-no")
+        .addEventListener("mouseenter", function () {
+          if (noAttempts > 0 && currentSlide === 6) {
+            moveButtonAway(this);
+            setDollMood("sad");
+          }
+        });
+
+      function spawnHearts(el) {
+        const r = el.getBoundingClientRect();
+        const cx = r.left + r.width / 2,
+          cy = r.top + r.height / 2;
+        const sym = ["♡", "✦", "·", "✧", "♡"];
+        for (let i = 0; i < 7; i++) {
+          const h = document.createElement("div");
+          h.className = "heart-burst";
+          h.innerHTML = sym[Math.floor(Math.random() * sym.length)];
+          h.style.cssText = `left:${cx}px;top:${cy}px;color:var(--pink-deep);font-size:${0.9 + Math.random() * 0.7}rem;`;
+          h.style.setProperty("--tx", (Math.random() - 0.5) * 150 + "px");
+          h.style.setProperty("--ty", -Math.random() * 150 - 40 + "px");
+          h.style.animationDelay = Math.random() * 0.2 + "s";
+          document.body.appendChild(h);
+          setTimeout(() => h.remove(), 1700);
+        }
+      }
+
+      function spawnConfetti() {
+        const colors = ["#f472a0", "#ffd166", "#d4a8e4", "#e8547a", "#fff"];
+        for (let i = 0; i < 55; i++) {
+          const c = document.createElement("div");
+          c.className = "confetti-piece";
+          c.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+          c.style.left = Math.random() * 100 + "vw";
+          c.style.top = "-16px";
+          c.style.borderRadius = Math.random() > 0.4 ? "50%" : "2px";
+          c.style.setProperty("--cx", (Math.random() - 0.5) * 180 + "px");
+          c.style.setProperty("--cy", Math.random() * 90 + 40 + "vh");
+          c.style.animationDelay = Math.random() * 0.9 + "s";
+          document.body.appendChild(c);
+          setTimeout(() => c.remove(), 3200);
+        }
+      }
+
+      // ==========================================
+      // ── CLEAN AUDIO & INTRO SCREEN SETUP ──
+      // ==========================================
+
+      // 1. Setup Audio Background
+      if (!window.bgAudio) {
+        window.bgAudio = document.createElement("audio");
+        window.bgAudio.loop = true;
+        document.body.appendChild(window.bgAudio);
+      }
+
+      function playAudioForSlide(slideNum) {
+        const t = tracks[slideNum];
+        if (t && t.src) {
+          if (!window.bgAudio.src.includes(t.src.replace("./", ""))) {
+            window.bgAudio.src = t.src;
+            window.bgAudio
+              .play()
+              .catch((e) => console.log("Menunggu interaksi user..."));
+          }
+        }
+      }
+
+      // 2. Setup Intro Screen
+      const introScreen = document.getElementById("intro-screen");
+
+      // Bikin Popmart dan Bubble naik ke layer paling atas (di atas Intro Screen)
+      doll.classList.add("intro-mode");
+      bubbleEl.classList.add("intro-mode");
+
+      // Boneka nyapa duluan sebelum diklik
+      setTimeout(() => showBubble("haiii alyaa, tap layarnya ya!"), 800);
+
+      // Pas layarnya diklik...
+      introScreen.addEventListener("click", () => {
+        // Play lagu pertama
+        playAudioForSlide(1);
+
+        // Hilangkan Intro Screen dengan transisi smooth
+        introScreen.classList.add("hidden");
+
+        // Kembalikan posisi layer Popmart biar nanti ga nutupin elemen lain
+        setTimeout(() => {
+          doll.classList.remove("intro-mode");
+          bubbleEl.classList.remove("intro-mode");
+        }, 600);
+
+        // Munculin UI widget lagu dan update teks bubble ke Slide 1
+        updateNowPlaying(1);
+        showBubble(bubbleTexts[1]);
+      });
+    </script>
+  </body>
+</html>
